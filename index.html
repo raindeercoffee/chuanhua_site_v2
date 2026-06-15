@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>讓品牌的靈魂破殼而出</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Noto+Serif+TC:wght@200;300;400&family=Noto+Sans+TC:wght@100;200;300&display=swap" rel="stylesheet">
+<style>
+/* ── variables ─────────────────────────────── */
+:root{
+  --bg:#24243c;--bg2:#3c3c54;
+  --or:#c86418;--orl:#e8945a;--org:rgba(200,100,24,.2);
+  --tx:#ddd3c8;--dm:#7c8fa0;--fn:rgba(175,168,158,.3);
+  --mist:#8298ad;--mist-mid:#627b94;--mist-deep:#546c84;
+  --night:#24243c;--night-soft:#303953;--ink:#1d2940;--ink-soft:#334760;
+}
+
+/* ── reset ─────────────────────────────────── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--mist);color:var(--tx);font-family:'Noto Serif TC',Georgia,serif;overflow-x:hidden;cursor:auto;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9990;mix-blend-mode:screen;opacity:.35;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");}
+
+/* ── wand cursor override ───────────────────── */
+body.wand-mode #cur-dot,body.wand-mode #cur-ring{opacity:0;pointer-events:none;}
+body.wand-mode{cursor:none;}
+#wand-cur{position:fixed;z-index:9999;pointer-events:none;display:none;transform:translate(-6px,-6px);}
+body.wand-mode #wand-cur{display:block;}
+
+/* ── default cursors ────────────────────────── */
+.cur{position:fixed;pointer-events:none;z-index:9998;border-radius:50%;transform:translate(-50%,-50%);display:none;}
+body.cursor-accent{cursor:none;}
+body.cursor-accent .cur{display:block;}
+#cur-dot{width:6px;height:6px;background:var(--orl);}
+#cur-ring{width:30px;height:30px;border:1px solid rgba(232,148,90,.28);transition:left .12s ease,top .12s ease;}
+@media(hover:none){.cur{display:none;}body{cursor:auto;}#wand-cur{display:none!important;}}
+
+/* ── intro ─────────────────────────────────── */
+#intro{position:fixed;inset:0;z-index:1000;background:radial-gradient(circle at center,#11172f 0%,#1d2947 42%,#506b88 68%,#9aabba 100%);overflow:hidden;transition:opacity 1.5s ease;}
+#intro.out{opacity:0;pointer-events:none;}
+#intro-cv{position:absolute;inset:0;width:100%;height:100%;}
+#skip-btn{position:absolute;bottom:2.5rem;right:2.5rem;font-family:'Noto Sans TC',sans-serif;font-weight:100;font-size:.68rem;letter-spacing:.22em;color:var(--dm);background:none;border:none;border-bottom:1px solid currentColor;padding-bottom:2px;cursor:pointer;transition:color .3s;opacity:0;animation:fadup 1s ease 2.8s forwards;}
+#skip-btn:hover{color:var(--tx);}
+@keyframes fadup{to{opacity:1;}}
+
+/* ── main ──────────────────────────────────── */
+#main{opacity:0;transition:opacity 1.5s ease;}
+#main.visible{opacity:1;}
+
+/* ── nav ───────────────────────────────────── */
+#site-nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:1.8rem 3.5rem;display:flex;justify-content:space-between;align-items:center;opacity:0;transition:opacity .8s;}
+#site-nav::before{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(to bottom,rgba(28,37,58,.78),rgba(45,57,79,.3),transparent);backdrop-filter:blur(5px);}
+#site-nav.visible{opacity:1;}
+.nav-brand{font-family:'Cormorant Garamond',Garamond,Georgia,serif;font-weight:300;font-size:1.32rem;letter-spacing:.44em;color:#f0ece5;text-decoration:none;position:relative;z-index:1;}
+.nav-links{display:flex;gap:2.5rem;list-style:none;position:relative;z-index:1;}
+.nav-links a{font-family:'Noto Sans TC',sans-serif;font-weight:100;font-size:.68rem;letter-spacing:.16em;color:rgba(236,241,245,.72);text-decoration:none;transition:color .3s;position:relative;}
+.nav-links a::before{content:'';position:absolute;inset:-.65rem -1rem;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:rgba(220,231,240,.08);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 8px 22px rgba(22,29,48,.08);z-index:-1;transition:background .3s,border-color .3s;}
+.nav-links a:hover{color:#fff;}
+.nav-links a:hover::before{background:rgba(220,231,240,.16);border-color:rgba(255,255,255,.26);}
+
+/* ── divider ───────────────────────────────── */
+.s-div{width:1px;height:68px;background:linear-gradient(to bottom,transparent,var(--or),transparent);margin:0 auto;opacity:.26;}
+
+/* ── identity ──────────────────────────────── */
+#identity{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:9rem 9vw 4rem;gap:7rem;background:radial-gradient(circle at 73% 50%,var(--night) 0%,#303b58 18%,#667f99 43%,#a7bbcc 78%,#c8d5df 100%);}
+.id-text{opacity:0;transform:translateY(26px);transition:opacity .9s,transform .9s;}
+.id-text.visible{opacity:1;transform:none;}
+.eyebrow{font-family:'Noto Sans TC',sans-serif;font-weight:100;font-size:.62rem;letter-spacing:.38em;color:var(--orl);margin-bottom:1.6rem;opacity:.88;}
+.id-headline{font-family:'Cormorant Garamond',Garamond,Georgia,serif;font-size:clamp(2.4rem,3.8vw,3.4rem);font-weight:300;line-height:1.3;margin-bottom:1.9rem;color:#132238;}
+.id-headline em{font-style:italic;color:var(--orl);}
+.id-body{font-size:.86rem;line-height:2.1;color:#26384f;font-weight:300;max-width:42ch;margin-bottom:2.5rem;}
+.kw-row{display:grid;grid-template-columns:repeat(3,126px);gap:.72rem;}
+.kw-tag{font-family:'Noto Sans TC',sans-serif;font-size:.68rem;font-weight:100;letter-spacing:.1em;color:rgba(236,241,245,.72);border:1px solid rgba(255,255,255,.14);border-radius:12px;background:rgba(220,231,240,.08);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 8px 22px rgba(22,29,48,.08);padding:.38rem .88rem;text-align:center;cursor:default;position:relative;overflow:hidden;transition:color .3s,border-color .3s,background .3s;}
+.kw-tag::before{content:'';position:absolute;inset:0;background:var(--org);transform:scaleX(0);transform-origin:left;transition:transform .36s ease;}
+.kw-tag:hover{color:#fff;border-color:rgba(255,255,255,.26);background:rgba(220,231,240,.16);}
+.kw-tag:hover::before{transform:scaleX(1);}
+.kw-tag span{position:relative;z-index:1;}
+.id-sphere{display:flex;justify-content:center;align-items:center;opacity:0;transform:scale(.9);transition:opacity 1.2s .3s,transform 1.2s .3s;}
+.id-sphere.visible{opacity:1;transform:none;}
+
+/* ── yolk sphere ───────────────────────────── */
+.yolk-sphere{position:relative;width:300px;height:300px;}
+.yk-glow{position:absolute;inset:-28%;border-radius:50%;background:radial-gradient(circle,rgba(200,100,24,.13) 0%,rgba(200,100,24,.04) 40%,transparent 70%);animation:ykg 3.2s ease-in-out infinite;}
+.yk-outer{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 36% 32%,rgba(70,106,152,.09) 0%,transparent 58%);border:1px solid rgba(70,108,168,.07);animation:ykr 14s linear infinite reverse;}
+.yk-ring{position:absolute;inset:5%;border-radius:50%;border:1px solid rgba(200,100,24,.2);animation:ykr 7.5s linear infinite;}
+.yk-mid{position:absolute;inset:13%;border-radius:50%;background:radial-gradient(circle at 38% 32%,rgba(208,88,24,.22) 0%,transparent 52%);animation:ykr 9.8s linear infinite;}
+.yk-core{position:absolute;inset:19%;border-radius:50%;background:radial-gradient(circle at 38% 32%,#eba060,#cc6a1a 44%,#852108 88%);animation:ykp 3.8s ease-in-out infinite;box-shadow:0 0 44px rgba(200,100,24,.3),inset 0 0 18px rgba(255,190,88,.12);}
+@keyframes ykg{0%,100%{opacity:.65;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+@keyframes ykr{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes ykp{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+
+/* ── services ──────────────────────────────── */
+#services{padding:4rem 9vw;background:radial-gradient(ellipse at 50% 56%,var(--night) 0%,#303954 46%,var(--mist-deep) 82%,var(--mist-mid) 100%);}
+.identity-services-divider{height:40px;}
+.sec-head{text-align:center;margin-bottom:5rem;opacity:0;transform:translateY(18px);transition:opacity .8s,transform .8s;}
+.sec-head.visible{opacity:1;transform:none;}
+.sec-eyebrow{font-family:'Noto Sans TC',sans-serif;font-weight:100;font-size:.62rem;letter-spacing:.38em;color:var(--orl);margin-bottom:.9rem;}
+.sec-title{font-family:'Cormorant Garamond',Garamond,Georgia,serif;font-size:clamp(1.9rem,3.2vw,2.8rem);font-weight:300;color:var(--ink);}
+#services .sec-title{color:#ebe7e1;}
+.s-line{width:36px;height:1px;background:var(--or);margin:1.2rem auto;opacity:.42;}
+.sv-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2.5rem;max-width:860px;margin:0 auto;}
+.sv-wrap{opacity:0;transform:translateY(36px);transition:opacity .78s,transform .78s;}
+.sv-wrap.visible{opacity:1;transform:none;}
+.sv-wrap:nth-child(2){transition-delay:.1s;}
+.sv-wrap:nth-child(3){transition-delay:.2s;}
+.sv-wrap:nth-child(4){transition-delay:.3s;}
+.sv-wrap:nth-child(5){transition-delay:.1s;}
+.sv-wrap:nth-child(6){transition-delay:.2s;}
+.service-card{position:relative;height:100%;padding:2.5rem 2rem;border:1px solid rgba(255,255,255,.42);border-radius:18px;background:radial-gradient(circle at 52% 42%,rgba(173,207,232,.92) 0%,rgba(207,226,240,.82) 42%,rgba(239,242,241,.68) 100%);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);box-shadow:inset 0 1px 0 rgba(255,255,255,.58),0 18px 44px rgba(15,24,43,.22),0 0 34px rgba(169,207,234,.16);cursor:default;overflow:hidden;transition:border-color .4s,transform .32s,background .4s;}
+.service-card:hover{border-color:rgba(255,255,255,.68);background:radial-gradient(circle at 52% 42%,rgba(184,216,238,.96) 0%,rgba(216,232,243,.88) 44%,rgba(244,245,242,.76) 100%);transform:translateY(-3px);}
+.service-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 84% 14%,rgba(200,100,24,.07) 0%,transparent 55%);opacity:0;transition:opacity .4s;}
+.service-card:hover::before{opacity:1;}
+.service-card::after{content:'';position:absolute;z-index:0;left:-38%;bottom:-18%;width:176%;height:72%;opacity:.34;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='180' viewBox='0 0 1200 180'%3E%3Cpath d='M0 82 C150 24 250 140 400 82 S650 24 800 82 S1050 140 1200 82' fill='none' stroke='%238dc9ea' stroke-width='24' opacity='.54'/%3E%3Cpath d='M0 126 C150 76 250 166 400 126 S650 76 800 126 S1050 166 1200 126' fill='none' stroke='%23c7e7f5' stroke-width='15' opacity='.72'/%3E%3C/svg%3E");background-repeat:repeat-x;background-position:0 center;background-size:1200px 180px;filter:blur(3px);animation:riverFlow 5.2s linear infinite;pointer-events:none;}
+@keyframes riverFlow{from{background-position:0 center}to{background-position:1200px center}}
+.card-deco{position:absolute;z-index:2;top:.88rem;right:1.48rem;width:36px;height:46px;}
+.card-deco svg{width:100%;height:100%;}
+.egg-outline{transition:stroke .4s;}
+.card-num{position:relative;z-index:2;font-family:'Cormorant Garamond',Garamond,Georgia,serif;font-size:.82rem;font-weight:600;letter-spacing:.22em;color:#d96f1b;text-shadow:0 0 10px rgba(232,148,90,.25);margin-bottom:.8rem;}
+.card-title{position:relative;z-index:2;font-family:'Noto Serif TC',Georgia,serif;font-size:1.22rem;font-weight:600;color:#14233a;margin-bottom:.88rem;line-height:1.55;}
+.card-body{position:relative;z-index:2;font-size:.78rem;line-height:1.95;color:#293b52;font-weight:200;}
+
+/* ════════════════════════════════════════════
+   CASES — 10 magic cards (2 rows × 5)
+════════════════════════════════════════════ */
+#cases{
+  padding:4rem 5vw;
+  position:relative;
+  cursor:auto;
+  background:linear-gradient(160deg,rgba(224,244,250,.96) 0%,rgba(179,221,237,.94) 48%,rgba(91,174,206,.92) 100%);
+}
+.services-cases-divider{height:40px;}
+#sparkle-cv{
+  position:absolute;inset:0;width:100%;height:100%;
+  pointer-events:none;z-index:5;
+}
+.cases-head{
+  text-align:center;margin-bottom:1.5rem;
+  opacity:0;transform:translateY(18px);transition:opacity .8s,transform .8s;
+}
+.cases-head.visible{opacity:1;transform:none;}
+#cases .sec-title{color:#16354b;}
+.cases-note{
+  text-align:center;margin-bottom:4rem;
+  font-family:'Noto Sans TC',sans-serif;font-weight:200;font-size:.72rem;
+  letter-spacing:.18em;color:#46515d;
+  opacity:0;transition:opacity .8s .15s;
+}
+.cases-note.visible{opacity:1;}
+
+/* grid: 5 cols */
+.cases-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:1.4rem;
+  position:relative;z-index:6;
+}
+
+/* ── magic card ─────────────────────────────── */
+.magic-card{
+  position:relative;
+  min-height:268px;
+  background:linear-gradient(180deg,#033f59 0%,#056884 24%,#087b9b 48%,#056884 72%,#03374f 100%);
+  border:1px solid rgba(255,255,255,.18);
+  clip-path:polygon(1% 0,24% .7%,49% 0,74% .8%,100% 0,99.3% 24%,100% 49%,99.2% 75%,100% 100%,75% 99.2%,50% 100%,25% 99.1%,0 100%,.8% 76%,0 51%,.7% 25%);
+  overflow:hidden;
+  cursor:auto;
+  transform-style:preserve-3d;
+  transition:border-color .36s,box-shadow .36s,transform .5s cubic-bezier(.22,.68,0,1.2);
+  opacity:0;transform:translateY(32px);
+}
+.magic-card.visible{opacity:1;transform:translateY(0);}
+
+/* stagger via nth-child */
+.magic-card:nth-child(2){transition-delay:.07s;}
+.magic-card:nth-child(3){transition-delay:.14s;}
+.magic-card:nth-child(4){transition-delay:.21s;}
+.magic-card:nth-child(5){transition-delay:.28s;}
+.magic-card:nth-child(6){transition-delay:.35s;}
+.magic-card:nth-child(7){transition-delay:.42s;}
+.magic-card:nth-child(8){transition-delay:.49s;}
+.magic-card:nth-child(9){transition-delay:.56s;}
+.magic-card:nth-child(10){transition-delay:.63s;}
+.magic-card:nth-child(2n){clip-path:polygon(0 1%,26% .2%,51% .9%,76% 0,100% 1%,99.1% 26%,100% 52%,99.2% 77%,100% 99%,74% 99.4%,49% 100%,23% 99.2%,0 100%,.9% 74%,0 48%,.8% 23%);}
+.magic-card:nth-child(3n){clip-path:polygon(.8% 0,23% .9%,48% 0,76% .6%,99.3% 0,100% 25%,99.1% 50%,100% 74%,99.2% 100%,76% 99.1%,51% 100%,24% 99.3%,0 100%,.7% 73%,0 49%,1% 24%);}
+.magic-card:nth-child(5n){clip-path:polygon(0 .8%,25% 0,50% .7%,75% 0,100% .9%,99.2% 23%,100% 48%,99% 76%,100% 100%,73% 99.2%,48% 100%,26% 99%,0 99.3%,.8% 77%,0 52%,.9% 25%);}
+
+.magic-card:hover{
+  border-color:rgba(220,170,80,.38);
+  box-shadow:0 0 28px rgba(200,115,28,.18),0 0 58px rgba(200,115,28,.07),0 16px 40px rgba(8,50,75,.28);
+}
+
+/* egg watermark */
+.magic-card::before{
+  content:'';position:absolute;
+  right:-10px;bottom:-14px;
+  width:88px;height:108px;
+  border:1px solid rgba(200,160,80,.07);
+  border-radius:50% 50% 50% 50%/40% 40% 60% 60%;
+  pointer-events:none;z-index:0;
+  transition:border-color .36s;
+}
+.magic-card:hover::before{border-color:rgba(220,170,80,.14);}
+
+/* shine layer (follows mouse) */
+.card-shine{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(circle at 50% 50%,rgba(255,210,100,.08),transparent 62%);
+  opacity:0;transition:opacity .3s;
+}
+.magic-card:hover .card-shine{opacity:1;}
+
+/* glow edge line at top */
+.card-glow-line{
+  position:absolute;top:0;left:15%;right:15%;height:1px;z-index:2;
+  background:linear-gradient(to right,transparent,rgba(220,165,70,.5),transparent);
+  transform:scaleX(0);transition:transform .5s ease;
+}
+.magic-card:hover .card-glow-line{transform:scaleX(1);}
+
+/* card inner */
+.card-inner{
+  position:relative;z-index:3;
+  padding:1.4rem 1.2rem 1.3rem;
+  height:100%;display:flex;flex-direction:column;
+}
+.card-cat{
+  font-family:'Noto Sans TC',sans-serif;font-weight:300;font-size:.66rem;
+  letter-spacing:.28em;color:#ffad67;text-shadow:0 0 8px rgba(255,145,68,.62);margin-bottom:.9rem;
+  display:flex;align-items:center;gap:.5rem;
+}
+.card-cat::before{content:'';display:block;width:16px;height:1px;background:var(--or);opacity:.5;}
+.card-name{
+  font-family:'Cormorant Garamond',Garamond,Georgia,serif;
+  font-size:1.28rem;font-weight:400;color:#fff;
+  line-height:1.25;margin-bottom:.6rem;
+  flex-grow:1;display:flex;align-items:center;
+  transition:color .3s;
+}
+.magic-card:hover .card-name{color:#fff;}
+.card-sub{
+  font-family:'Noto Sans TC',sans-serif;font-weight:100;font-size:.58rem;
+  letter-spacing:.1em;color:rgba(255,255,255,.82);
+  margin-bottom:1.2rem;line-height:1.6;
+}
+.card-divider{
+  width:100%;height:1px;
+  background:linear-gradient(to right,rgba(200,160,80,.15),rgba(200,160,80,.04));
+  margin-bottom:1rem;
+}
+.card-divider,.card-stats{opacity:0;transform:translateY(7px);transition:opacity .14s ease,transform .14s ease;}
+.magic-card.magic-active .card-divider,.magic-card.magic-active .card-stats{opacity:1;transform:translateY(0);}
+.card-stats{display:flex;flex-direction:column;gap:.5rem;}
+.stat-row{display:flex;justify-content:space-between;align-items:baseline;}
+.stat-val{
+  font-family:'Cormorant Garamond',Garamond,Georgia,serif;
+  font-size:1.08rem;font-weight:400;color:#ffad67;text-shadow:0 0 8px rgba(255,145,68,.5);
+}
+.stat-val.mixed-stat{display:inline-flex;align-items:baseline;gap:.14em;line-height:1;}
+.stat-unit{font-family:'Noto Serif TC',Georgia,serif;font-size:.76em;line-height:1;transform:translateY(2.5px);}
+.stat-label{
+  font-family:'Noto Sans TC',sans-serif;font-weight:100;font-size:.52rem;
+  letter-spacing:.1em;color:rgba(255,255,255,.82);text-align:right;
+}
+
+/* ── resonance ─────────────────────────────── */
+#resonance{min-height:76vh;position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 48%,#171a32 0%,#242945 48%,#465a78 84%,var(--mist-mid) 100%);}
+#const-cv{position:absolute;inset:0;width:100%;height:100%;}
+.res-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:76vh;padding:5rem 8vw;text-align:center;}
+.res-eyebrow{font-family:'Noto Sans TC',sans-serif;font-weight:100;font-size:.62rem;letter-spacing:.38em;color:var(--orl);margin-bottom:1.2rem;opacity:.88;}
+.res-title{font-family:'Cormorant Garamond',Garamond,Georgia,serif;font-size:clamp(2.2rem,4.5vw,4rem);font-weight:300;color:var(--tx);line-height:1.25;margin-bottom:1.5rem;opacity:0;transform:translateY(28px);transition:opacity 1s,transform 1s;}
+.res-title.visible{opacity:1;transform:none;}
+.res-body{font-size:.84rem;line-height:2.1;color:rgba(242,246,250,.78);font-weight:200;max-width:50ch;margin-bottom:3.5rem;opacity:0;transition:opacity 1s .3s;}
+.res-body.visible{opacity:1;}
+.cta-btn{display:inline-flex;align-items:center;gap:1rem;font-family:'Noto Serif TC',Georgia,serif;font-size:.88rem;font-weight:300;letter-spacing:.12em;color:var(--tx);background:none;border:none;cursor:pointer;padding:.8rem 0;position:relative;opacity:0;transition:opacity 1s .5s;}
+.cta-btn.visible{opacity:1;}
+.cta-line{width:55px;height:1px;background:var(--or);transition:width .42s;display:block;}
+.cta-btn:hover .cta-line{width:92px;}
+.cta-btn::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:var(--fn);transition:width .42s;}
+.cta-btn:hover::after{width:100%;}
+
+/* ── footer ────────────────────────────────── */
+footer{padding:2.8rem 9vw;border-top:1px solid rgba(255,255,255,.18);display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,var(--mist-mid),var(--mist));}
+.foot-brand{font-family:'Cormorant Garamond',Garamond,Georgia,serif;font-weight:300;font-size:1.1rem;letter-spacing:.42em;color:var(--ink);}
+.foot-copy{font-family:'Noto Sans TC',sans-serif;font-size:.6rem;font-weight:100;letter-spacing:.15em;color:rgba(29,41,64,.58);}
+
+/* ── responsive ────────────────────────────── */
+@media(max-width:1100px){
+  .cases-grid{grid-template-columns:repeat(3,1fr);}
+}
+@media(max-width:768px){
+  #identity{grid-template-columns:1fr;gap:4rem;padding:7rem 6vw 3.5rem;}
+  .yolk-sphere{width:220px;height:220px;}
+  .sv-grid{grid-template-columns:1fr;}
+  .cases-grid{grid-template-columns:repeat(2,1fr);}
+  #site-nav{padding:1.5rem 2rem;}
+  .nav-links{display:none;}
+}
+@media(max-width:480px){
+  .cases-grid{grid-template-columns:1fr;}
+  .kw-row{grid-template-columns:repeat(2,126px);}
+}
+</style>
+</head>
+<body>
+
+<!-- cursors -->
+<div id="cur-dot" class="cur"></div>
+<div id="cur-ring" class="cur"></div>
+
+<!-- wand cursor -->
+<div id="wand-cur">
+  <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- 4-pointed star tip at (10,10) -->
+    <path d="M10 2 L12.2 8 L10 6.5 L7.8 8 Z" fill="rgba(255,230,100,.95)"/>
+    <path d="M18 10 L12 12.2 L13.5 10 L12 7.8 Z" fill="rgba(255,230,100,.95)"/>
+    <path d="M10 18 L7.8 12 L10 13.5 L12.2 12 Z" fill="rgba(255,230,100,.95)"/>
+    <path d="M2 10 L8 7.8 L6.5 10 L8 12.2 Z" fill="rgba(255,230,100,.95)"/>
+    <!-- centre dot -->
+    <circle cx="10" cy="10" r="2.5" fill="rgba(255,240,160,1)"/>
+    <circle cx="10" cy="10" r="5" fill="rgba(255,220,80,.18)"/>
+    <!-- wand stick -->
+    <line x1="13" y1="13" x2="48" y2="48" stroke="rgba(210,170,80,.72)" stroke-width="2.8" stroke-linecap="round"/>
+    <line x1="13" y1="13" x2="48" y2="48" stroke="rgba(255,240,160,.22)" stroke-width="5" stroke-linecap="round"/>
+    <!-- small glint near tip -->
+    <circle cx="10" cy="10" r="1.2" fill="white" opacity=".9"/>
+  </svg>
+</div>
+
+<!-- ███ INTRO ███████████████████████████████ -->
+<section id="intro">
+  <canvas id="intro-cv"></canvas>
+  <button id="skip-btn">在靜中等待 — 或點此略過</button>
+</section>
+
+<!-- ███ MAIN ██████████████████████████████████ -->
+<div id="main">
+
+<nav id="site-nav">
+  <a class="nav-brand" href="#">川花</a>
+  <ul class="nav-links">
+    <li><a href="#identity">關於我們</a></li>
+    <li><a href="#services">服務</a></li>
+    <li><a href="#cases">案例</a></li>
+    <li><a href="#resonance">開始對話</a></li>
+  </ul>
+</nav>
+
+<!-- § 1  IDENTITY -->
+<section id="identity">
+  <div class="id-text scroll-on">
+    <p class="eyebrow">WHO WE ARE</p>
+    <h2 class="id-headline">孵化每一個品牌夢<br>讓靈魂破殼而出</h2>
+    <p class="id-body">不同於許多行銷顧問公司的一次性販售，我們集結實戰電商、廣告投放、靈敏嗅覺、獨特美感，為你打造最符合商品靈魂的口碑行銷，讓每一次的曝光都是藝術的展現。<br><br>絕不做廣撒花冤枉錢的行銷，我們致力挖掘每一個品牌的蛋黃層，將品牌最核心、最有共鳴的受眾向外擴展，讓品牌被記住、被喜歡，然後愛上。</p>
+    <div class="kw-row">
+
+      <div class="kw-tag"><span>行銷統籌</span></div>
+      <div class="kw-tag"><span>電商實戰</span></div>
+      <div class="kw-tag"><span>企業顧問</span></div>
+      <div class="kw-tag"><span>美學落地</span></div>
+      <div class="kw-tag"><span>活動策畫</span></div>
+      <div class="kw-tag"><span>品牌轉型</span></div>
+    </div>
+  </div>
+  <div class="id-sphere scroll-on">
+    <div class="yolk-sphere" id="yolk-sphere">
+      <div class="yk-glow"></div>
+      <div class="yk-outer"></div>
+      <div class="yk-ring"></div>
+      <div class="yk-mid"></div>
+      <div class="yk-core"></div>
+    </div>
+  </div>
+</section>
+
+<div class="s-div identity-services-divider"></div>
+
+<!-- § 2  SERVICES -->
+<section id="services">
+  <div class="sec-head scroll-on">
+    <p class="sec-eyebrow">WHAT WE DO</p>
+    <h2 class="sec-title">我們做的事</h2>
+    <div class="s-line"></div>
+  </div>
+  <div class="sv-grid">
+    <div class="sv-wrap scroll-on">
+      <div class="service-card">
+        <div class="card-deco">
+          <svg viewBox="0 0 36 46" fill="none"><ellipse cx="18" cy="26" rx="14" ry="19" class="egg-outline" stroke="rgba(198,182,162,.4)" stroke-width="1"/><path d="M18 7L20 18L16 24L21.5 33L18 43" class="crack-main" stroke="rgba(238,148,58,0)" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="60" stroke-dashoffset="60"/><path d="M18 22L13.5 27.5" class="crack-branch" stroke="rgba(238,148,58,0)" stroke-width=".85" stroke-dasharray="12" stroke-dashoffset="12"/></svg>
+        </div>
+        <p class="card-num">01</p>
+        <h3 class="card-title">女裝廣告<br>臉書投放</h3>
+        <p class="card-body">不是花錢買流量，是找到最對的那群人。精準投放，讓每一分廣告費都落在蛋黃層，真正有共鳴的她們。</p>
+      </div>
+    </div>
+    <div class="sv-wrap scroll-on">
+      <div class="service-card">
+        <div class="card-deco">
+          <svg viewBox="0 0 36 46" fill="none"><ellipse cx="18" cy="26" rx="14" ry="19" class="egg-outline" stroke="rgba(198,182,162,.4)" stroke-width="1"/><path d="M18 7L16 18L20 24L15 33L18 43" class="crack-main" stroke="rgba(238,148,58,0)" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="60" stroke-dashoffset="60"/><path d="M18 22L22.5 27" class="crack-branch" stroke="rgba(238,148,58,0)" stroke-width=".85" stroke-dasharray="12" stroke-dashoffset="12"/></svg>
+        </div>
+        <p class="card-num">02</p>
+        <h3 class="card-title">女裝品牌<br>行銷統籌</h3>
+        <p class="card-body">從策略到執行，我們最懂女性消費心理。讓品牌的靈魂穿透每個觸點，長出自己的根，留下深刻印記。</p>
+      </div>
+    </div>
+    <div class="sv-wrap scroll-on">
+      <div class="service-card">
+        <div class="card-deco">
+          <svg viewBox="0 0 36 46" fill="none"><ellipse cx="18" cy="26" rx="14" ry="19" class="egg-outline" stroke="rgba(198,182,162,.4)" stroke-width="1"/><path d="M17 7L19.5 17L15 23L20 32L17.5 43" class="crack-main" stroke="rgba(238,148,58,0)" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="60" stroke-dashoffset="60"/><path d="M18 21L14 26" class="crack-branch" stroke="rgba(238,148,58,0)" stroke-width=".85" stroke-dasharray="12" stroke-dashoffset="12"/></svg>
+        </div>
+        <p class="card-num">03</p>
+        <h3 class="card-title">兒童劇團<br>行銷顧問</h3>
+        <p class="card-body">藝文品牌需要的不只是曝光，是讓對的家庭找到你。觸及那些真正會感動、帶孩子一再回來的受眾。</p>
+      </div>
+    </div>
+    <div class="sv-wrap scroll-on">
+      <div class="service-card">
+        <div class="card-deco">
+          <svg viewBox="0 0 36 46" fill="none"><ellipse cx="18" cy="26" rx="14" ry="19" class="egg-outline" stroke="rgba(198,182,162,.4)" stroke-width="1"/><path d="M19 7L17 18L21.5 24L16.5 33L19 43" class="crack-main" stroke="rgba(238,148,58,0)" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="60" stroke-dashoffset="60"/><path d="M18.5 22L22 27.5" class="crack-branch" stroke="rgba(238,148,58,0)" stroke-width=".85" stroke-dasharray="12" stroke-dashoffset="12"/></svg>
+        </div>
+        <p class="card-num">04</p>
+        <h3 class="card-title">繪本故事<br>Podcast 升級</h3>
+        <p class="card-body">有靈魂、有理想，但還沒被聽見？我們幫你找對聽眾、優化內容，讓你的聲音從自說自話，變成真正的迴響。</p>
+      </div>
+    </div>
+    <div class="sv-wrap scroll-on">
+      <div class="service-card">
+        <div class="card-deco">
+          <svg viewBox="0 0 36 46" fill="none"><ellipse cx="18" cy="26" rx="14" ry="19" class="egg-outline" stroke="rgba(198,182,162,.4)" stroke-width="1"/><path d="M17.5 7L20 17L16 24L21 32L18 43" class="crack-main" stroke="rgba(238,148,58,0)" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="60" stroke-dashoffset="60"/><path d="M18 22L13.5 27" class="crack-branch" stroke="rgba(238,148,58,0)" stroke-width=".85" stroke-dasharray="12" stroke-dashoffset="12"/></svg>
+        </div>
+        <p class="card-num">05</p>
+        <h3 class="card-title">品牌整合<br>行銷企劃</h3>
+        <p class="card-body">從企業轉型、內容企劃到廣告轉換，串起每一個消費觸點。讓商品不只是販售，而是品牌被記住的靈魂至高點。</p>
+      </div>
+    </div>
+    <div class="sv-wrap scroll-on">
+      <div class="service-card">
+        <div class="card-deco">
+          <svg viewBox="0 0 36 46" fill="none"><ellipse cx="18" cy="26" rx="14" ry="19" class="egg-outline" stroke="rgba(198,182,162,.4)" stroke-width="1"/><path d="M19 7L16.5 18L21 25L16 34L18.5 43" class="crack-main" stroke="rgba(238,148,58,0)" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="60" stroke-dashoffset="60"/><path d="M18.5 23L23 28" class="crack-branch" stroke="rgba(238,148,58,0)" stroke-width=".85" stroke-dasharray="12" stroke-dashoffset="12"/></svg>
+        </div>
+        <p class="card-num">06</p>
+        <h3 class="card-title">品牌重塑<br>內容策略</h3>
+        <p class="card-body">重新梳理品牌靈魂、受眾與溝通語言，建立一致的內容矩陣。讓老品牌長出新樣貌，也讓新品牌站穩自己的位置。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="s-div services-cases-divider"></div>
+
+<!-- § 3  CASES — 10 magic cards -->
+<section id="cases">
+  <canvas id="sparkle-cv"></canvas>
+
+  <div class="cases-head sec-head scroll-on">
+    <p class="sec-eyebrow">WHAT WE HATCH</p>
+    <h2 class="sec-title">我們孵過什麼</h2>
+    <div class="s-line"></div>
+  </div>
+  <p class="cases-note scroll-on"> · 游標移入感受魔法 · </p>
+
+  <div class="cases-grid">
+
+    <!-- 1 -->
+    <div class="magic-card scroll-on">
+      <div class="card-shine"></div>
+      <div class="card-glow-line"></div>
+      <div class="card-inner">
+        <span class="card-cat">美妝保養</span>
+        <h3 class="card-name">雪芙蘭</h3>
+        <p class="card-sub">Facebook 精準投放策略</p>
+        <div class="card-divider"></div>
+        <div class="card-stats">
+          <div class="stat-row"><span class="stat-val">ROAS ×4.2</span><span class="stat-label">廣告回報率</span></div>
+          <div class="stat-row"><span class="stat-val mixed-stat"><span>35</span><span class="stat-unit">天</span></span><span class="stat-label">品牌重塑週期</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="magic-card scroll-on">
+      <div class="card-shine"></div>
+      <div class="card-glow-line"></div>
+      <div class="card-inner">
+        <span class="card-cat">美妝保養</span>
+        <h3 class="card-name">廣源良</h3>
+        <p class="card-sub">蛋黃層受眾純化策略</p>
+        <div class="card-divider"></div>
+        <div class="card-stats">
+          <div class="stat-row"><span class="stat-val">↑ 68%</span><span class="stat-label">核心粉絲黏著率</span></div>
+          <div class="stat-row"><span class="stat-val">×2.4</span><span class="stat-label">受眾精準度提升</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="magic-card scroll-on">
+      <div class="card-shine"></div>
+      <div class="card-glow-line"></div>
+      <div class="card-inner">
+        <span class="card-cat">女性生理用品</span>
+        <h3 class="card-name">康乃馨</h3>
+        <p class="card-sub">女性溫柔溝通行銷策略</p>
+        <div class="card-divider"></div>
+        <div class="card-stats">
+          <div class="stat-row"><span class="stat-val">×2.8</span><span class="stat-label">自然觸及倍增</span></div>
+          <div class="stat-row"><span class="stat-val">↑ 53%</span><span class="stat-label">品牌好感度提升</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="magic-card scroll-on">
+      <div class="card-shine"></div>
+      <div class="card-glow-line"></div>
+      <div class="card-inner">
+        <span class="card-cat">食品伴手禮</span>
+        <h3 class="card-name">舊振南</h3>
+        <p class="card-sub">節慶整合行銷企劃</p>
+        <div class="card-divider"></div>
+        <div class="card-stats">
+          <div class="stat-row"><span class="stat-val">↑ 41%</span><span class="stat-label">官網轉換率</span></div>
+          <div class="stat-row"><span class="stat-val">完售</span><span class="stat-label">禮盒預購首週</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="magic-card scroll-on">
+      <div class="card-shine"></div>
+      <div class="card-glow-line"></div>
+      <div class="card-inner">
+        <span class="card-cat">食品伴手禮</span>
+        <h3 class="card-name">快車肉乾</h3>
+        <p class="card-sub">品牌年輕化內容策略</p>
+        <div class="card-divider"></div>
+        <div class="card-stats">
+          <div class="stat-row"><span class="stat-val">↑ 57%</span><span class="stat-label">新客佔比成長</span></div>
+          <div class="stat-row"><span class="stat-val">×2.1</span><span class="stat-label">社群自然觸及</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="magic-card scroll-on">
+      <div class="card-shine"></div>
+      <div class="card-glow-line"></div>
+      <div class="card-inner">
+        <span class="card-cat">茶葉禮品</span>
+        <h3 class="card-name">小茶栽堂</h3>
+        <p class="card-sub">品牌靈魂重塑 × 內容矩陣</p>
+        <div class="card-divider"></div>
+        <div class="card-stats">
+          <div class="stat-row"><span class="stat-val">×3.0</span><span class="stat-label">內容留存率提升</span></div>
+          <div class="stat-row"><span class="stat-val">重建</span><span class="stat-label">品牌識別體系</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="magic-card scroll-on">
+      <div class="card-shine"></div>
+      <div class="card-glow-line"></div>
+      <div class="card-inner">
+        <span class="card-cat">茶葉禮品</span>
+        <h3 class="card-name">京盛宇</h3>
+        <p class="card-sub">儀式感行銷 × 故事策略</p>
+        <div class="card-divider"></div>
+        <div class="card-stats">
+          <div class="stat-row"><span class="stat-val">×3.1</span><span class="stat-label">社群互動率</span></div>
+          <div class="stat-row"><span class="stat-val">↑ 44%</span><span class="stat-label">高客單忠實客成長</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8 -->
+    <div class="magic-card scroll-on">
+      <div class="card-shine"></div>
+      <div class="card-glow-line"></div>
+      <div class="card-inner">
+        <span class="card-cat">3C 週邊</span>
+        <h3 class="card-name">犀牛盾</h3>
+        <p class="card-sub">女性科技族群開發策略</p>
+        <div class="card-divider"></div>
+        <div class="card-stats">
+          <div class="stat-row"><span class="stat-val">↑ 89%</span><span class="stat-label">新受眾規模成長</span></div>
+          <div class="stat-row"><span class="stat-val">×3</span><span class="stat-label">女性客佔比翻倍</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9 -->
+    <div class="magic-card scroll-on">
+      <div class="card-shine"></div>
+      <div class="card-glow-line"></div>
+      <div class="card-inner">
+        <span class="card-cat">女性運動服飾</span>
+        <h3 class="card-name">Macaca</h3>
+        <p class="card-sub">在地女性認同品牌策略</p>
+        <div class="card-divider"></div>
+        <div class="card-stats">
+          <div class="stat-row"><span class="stat-val">↑ 72%</span><span class="stat-label">粉絲黏著率</span></div>
+          <div class="stat-row"><span class="stat-val">深化</span><span class="stat-label">台灣本土認同感知</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10 -->
+    <div class="magic-card scroll-on">
+      <div class="card-shine"></div>
+      <div class="card-glow-line"></div>
+      <div class="card-inner">
+        <span class="card-cat">芳療 · SPA</span>
+        <h3 class="card-name">肯園 CanJune</h3>
+        <p class="card-sub">療癒品牌升維策略</p>
+        <div class="card-divider"></div>
+        <div class="card-stats">
+          <div class="stat-row"><span class="stat-val">×2.6</span><span class="stat-label">頂級客群轉化率</span></div>
+          <div class="stat-row"><span class="stat-val">↑ 61%</span><span class="stat-label">品牌感知層次提升</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .cases-grid -->
+</section>
+
+<div class="s-div"></div>
+
+<!-- § 4  RESONANCE -->
+<section id="resonance">
+  <canvas id="const-cv"></canvas>
+  <div class="res-inner">
+    <p class="res-eyebrow">ARE YOU THE ONE</p>
+    <h2 class="res-title scroll-on">品牌有了想法，<br>但還無法展翅飛翔嗎？</h2>
+    <p class="res-body scroll-on">不管你是正在轉型的品牌，建立自己宇宙的創作者，<br>還是有靈魂、有美學，但還沒找到落地方式的人——<br>我們在找的，是靈魂最對的彼此。</p>
+    <button class="cta-btn scroll-on" id="cta-btn">
+      <span class="cta-line"></span>聯絡我們<span class="cta-line"></span>
+    </button>
+  </div>
+</section>
+
+<footer>
+  <span class="foot-brand">川花</span>
+  <span class="foot-copy">© 2026 川花有限公司</span>
+</footer>
+
+</div><!-- #main -->
+
+<script>
+'use strict';
+const lerp=(a,b,t)=>a+(b-a)*t;
+const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+const easeOut=t=>1-Math.pow(1-t,3);
+const easeIn=t=>t*t*t;
+
+/* ── CURSOR ── */
+const dot=document.getElementById('cur-dot');
+const ring=document.getElementById('cur-ring');
+const wandEl=document.getElementById('wand-cur');
+let mX=-100,mY=-100,rX=-100,rY=-100;
+
+document.addEventListener('mousemove',e=>{
+  mX=e.clientX;mY=e.clientY;
+  dot.style.left=mX+'px';dot.style.top=mY+'px';
+  if(wandEl)wandEl.style.cssText=`left:${mX}px;top:${mY}px;position:fixed;z-index:9999;pointer-events:none;transform:translate(-6px,-6px);display:${document.body.classList.contains('wand-mode')?'block':'none'};`;
+});
+(function tr(){
+  rX=lerp(rX,mX,.115);rY=lerp(rY,mY,.115);
+  ring.style.left=rX+'px';ring.style.top=rY+'px';
+  requestAnimationFrame(tr);
+})();
+
+/* ═══════════ INTRO ANIMATION ═══════════ */
+(function IntroAnim(){
+  const cv=document.getElementById('intro-cv');
+  const ctx=cv.getContext('2d');
+  let W,H,CX,CY;
+  function resize(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;CX=W/2;CY=H/2;}
+  resize();window.addEventListener('resize',resize);
+
+  const TL={EGG_IN:1.3,EGG_FULL:2.8,CRACK_S:4.8,CRACK_E:6.8,BOOM:6.8,WING_S:7.4,BRAND_S:10.0,BRAND_E:12.5,OUT_S:12.5,OUT_E:14.0};
+  let elapsed=0,lastT=0,boomDone=false,outroDone=false;
+  const amb=[],boom=[];
+
+  for(let i=0;i<88;i++) amb.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,r:Math.random()*1.1+.32,vx:(Math.random()-.5)*.2,vy:-(Math.random()*.1+.03),a:Math.random()*.28+.06,ph:Math.random()*Math.PI*2,fr:Math.random()*.62+.24,wm:Math.random()>.82});
+
+  function drawAmb(){for(const p of amb){p.x+=p.vx;p.y+=p.vy;if(p.y<-4)p.y=H+4;if(p.x<0)p.x=W;if(p.x>W)p.x=0;const f=p.a*(0.55+0.45*Math.sin(elapsed*p.fr+p.ph));ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.wm?`rgba(240,145,62,${f})`:`rgba(80,120,185,${f})`;ctx.fill();}}
+
+  function eggPath(x,y,rx,ry){ctx.beginPath();ctx.moveTo(x,y-ry);ctx.bezierCurveTo(x+rx*.56,y-ry,x+rx,y-ry*.32,x+rx,y+ry*.24);ctx.bezierCurveTo(x+rx,y+ry*.78,x+rx*.6,y+ry,x,y+ry);ctx.bezierCurveTo(x-rx*.6,y+ry,x-rx,y+ry*.78,x-rx,y+ry*.24);ctx.bezierCurveTo(x-rx,y-ry*.32,x-rx*.56,y-ry,x,y-ry);ctx.closePath();}
+
+  function drawEgg(x,y,rx,ry,alpha,glow,warmth){ctx.save();ctx.globalAlpha=alpha;if(glow>0){const gd=ctx.createRadialGradient(x,y,0,x,y,rx*2.6);gd.addColorStop(0,`rgba(196,96,20,${glow*.2})`);gd.addColorStop(.5,`rgba(196,96,20,${glow*.06})`);gd.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=gd;ctx.fillRect(x-rx*3.5,y-ry*3.5,rx*7,ry*7);}
+  eggPath(x,y,rx,ry);const fl=ctx.createRadialGradient(x-rx*.22,y-ry*.22,0,x,y,rx*1.45);const r=Math.round(156+warmth*24),g2=Math.round(144+warmth*10),b=Math.round(126-warmth*14);fl.addColorStop(0,`rgba(${r},${g2},${b},${.11+warmth*.06})`);fl.addColorStop(.65,'rgba(46,54,76,.05)');fl.addColorStop(1,'rgba(8,9,13,.02)');ctx.fillStyle=fl;ctx.fill();ctx.strokeStyle=`rgba(188,176,160,${.42+warmth*.24})`;ctx.lineWidth=1.2;ctx.stroke();ctx.beginPath();ctx.arc(x-rx*.26,y-ry*.37,rx*.12,0,Math.PI*2);const sp=ctx.createRadialGradient(x-rx*.26,y-ry*.37,0,x-rx*.26,y-ry*.37,rx*.12);sp.addColorStop(0,'rgba(255,248,230,.22)');sp.addColorStop(1,'rgba(255,248,230,0)');ctx.fillStyle=sp;ctx.fill();ctx.restore();}
+
+  const CRACKS=[{pts:[[.04,-.84],[.13,-.48],[.05,-.12],[.18,.22],[.09,.57]],dl:0},{pts:[[-.04,-.6],[-.13,-.22],[-.04,.14],[-.16,.42]],dl:.18},{pts:[[.09,-.28],[.27,-.04],[.32,.26]],dl:.32},{pts:[[-.08,.06],[-.25,.22],[-.2,.46]],dl:.44},{pts:[[-.16,-.66],[-.04,-.52]],dl:.66}];
+
+  function drawCracks(x,y,rx,ry,prog){ctx.save();for(const ck of CRACKS){const lp=clamp((prog-ck.dl)/(1-ck.dl),0,1);if(lp<=0)continue;const pts=ck.pts,sp2=lp*(pts.length-1);ctx.beginPath();ctx.moveTo(x+pts[0][0]*rx*1.84,y+pts[0][1]*ry*1.55);for(let i=1;i<pts.length;i++){const fr=sp2-(i-1);if(fr<=0)break;const tx=x+pts[i][0]*rx*1.84,ty=y+pts[i][1]*ry*1.55,px=x+pts[i-1][0]*rx*1.84,py=y+pts[i-1][1]*ry*1.55;if(fr>=1)ctx.lineTo(tx,ty);else{ctx.lineTo(lerp(px,tx,fr),lerp(py,ty,fr));break;}}ctx.shadowBlur=7;ctx.shadowColor='#c06015';ctx.strokeStyle='rgba(225,135,48,.74)';ctx.lineWidth=1.5;ctx.stroke();ctx.shadowBlur=2;ctx.strokeStyle='rgba(255,196,120,.52)';ctx.lineWidth=.6;ctx.stroke();}ctx.restore();}
+
+  function createBoom(x,y,rx,ry){for(let i=0;i<46;i++){const a=Math.random()*Math.PI*2,sp2=Math.random()*3.2+.8,sa=Math.random()*Math.PI*2;boom.push({x:x+Math.cos(sa)*rx*.88,y:y+Math.sin(sa)*ry*.88,vx:Math.cos(a)*sp2,vy:Math.sin(a)*sp2-.4,g:.04,sz:Math.random()*3.5+1.5,ang:Math.random()*Math.PI*2,spin:(Math.random()-.5)*.14,al:.88,dc:Math.random()*.017+.007,t:'s'});}for(let i=0;i<102;i++){const a=Math.random()*Math.PI*2,sp2=Math.random()*5.2+.3;boom.push({x,y,vx:Math.cos(a)*sp2,vy:Math.sin(a)*sp2-1.4,g:.022,sz:Math.random()*2.2+.5,al:1,dc:Math.random()*.015+.007,t:'l',wm:Math.random()>.28});}}
+
+  function drawBoom(){for(let i=boom.length-1;i>=0;i--){const p=boom[i];p.x+=p.vx;p.y+=p.vy;p.vy+=p.g;p.vx*=.985;p.al-=p.dc;if(p.al<=0){boom.splice(i,1);continue;}ctx.save();if(p.t==='s'){p.ang+=p.spin;ctx.translate(p.x,p.y);ctx.rotate(p.ang);ctx.globalAlpha=p.al;ctx.fillStyle=`rgba(180,168,150,${p.al})`;ctx.fillRect(-p.sz/2,-p.sz/4,p.sz,p.sz/2);}else{ctx.beginPath();ctx.arc(p.x,p.y,p.sz,0,Math.PI*2);ctx.globalAlpha=p.al;if(p.wm){ctx.shadowBlur=5;ctx.shadowColor='#be5e10';ctx.fillStyle=`rgba(228,138,50,${p.al})`;}else{ctx.shadowBlur=4;ctx.shadowColor='#3d74b2';ctx.fillStyle=`rgba(120,172,232,${p.al})`;}ctx.fill();}ctx.restore();}}
+
+  function drawWings(wcx,wcy,alpha,sc,sway){if(alpha<=0)return;ctx.save();ctx.translate(wcx+sway,wcy);ctx.scale(sc,sc);ctx.globalAlpha=alpha;const sh=.5+.5*Math.sin(elapsed*3.1);
+  function wing(flip){const m=flip?-1:1;ctx.beginPath();ctx.moveTo(0,5);ctx.bezierCurveTo(26*m,-38,122*m,-70,168*m,-25);ctx.bezierCurveTo(147*m,22,66*m,40,0,5);const gl=ctx.createLinearGradient(flip?168:-168,-70,0,5);gl.addColorStop(0,`rgba(${123+sh*20},${160+sh*18},${210+sh*8},.1)`);gl.addColorStop(1,'rgba(170,204,246,.03)');ctx.fillStyle=gl;ctx.fill();ctx.strokeStyle=`rgba(160,194,228,${.16+sh*.1})`;ctx.lineWidth=.75;ctx.stroke();ctx.beginPath();ctx.moveTo(8*m,2);ctx.bezierCurveTo(46*m,-22,93*m,-36,133*m,-20);ctx.strokeStyle='rgba(146,188,226,.1)';ctx.lineWidth=.48;ctx.stroke();ctx.beginPath();ctx.moveTo(0,5);ctx.bezierCurveTo(22*m,28,95*m,56,114*m,26);ctx.bezierCurveTo(89*m,-2,36*m,7,0,5);ctx.fillStyle='rgba(128,176,218,.07)';ctx.fill();ctx.strokeStyle='rgba(158,192,226,.13)';ctx.stroke();}
+  wing(false);ctx.save();ctx.scale(-1,1);wing(false);ctx.restore();
+  ctx.beginPath();ctx.ellipse(0,4,3.5,16,0,0,Math.PI*2);const bg=ctx.createLinearGradient(0,-12,0,20);bg.addColorStop(0,'rgba(222,214,194,.46)');bg.addColorStop(1,'rgba(172,156,138,.18)');ctx.fillStyle=bg;ctx.fill();
+  ctx.beginPath();ctx.arc(0,-17,4.8,0,Math.PI*2);const hg=ctx.createRadialGradient(0,-17,0,0,-17,4.8);hg.addColorStop(0,'rgba(238,222,194,.55)');hg.addColorStop(1,'rgba(228,206,170,0)');ctx.fillStyle=hg;ctx.fill();
+  const ws=TL.WING_S+.7,we=TL.WING_S+2.8;if(elapsed>ws&&elapsed<we){const wp=(elapsed-ws)/(we-ws);for(let i=0;i<14;i++){const pt=i/13;if(pt>wp)break;const tx=lerp(-85,115,pt),ty=-28+Math.sin(pt*Math.PI)*-38,ta=Math.max(0,1-Math.abs(pt-wp)*3.5)*.72;if(ta<=0)continue;ctx.beginPath();ctx.arc(tx,ty,1.6,0,Math.PI*2);ctx.fillStyle=`rgba(255,194,90,${ta})`;ctx.shadowBlur=7;ctx.shadowColor=`rgba(212,126,36,${ta})`;ctx.fill();ctx.shadowBlur=0;}}
+  ctx.restore();}
+
+  function drawBrand(sA){ctx.save();ctx.globalAlpha=clamp(sA,0,.84);ctx.font='200 13px Noto Serif TC,Georgia,serif';ctx.textAlign='center';ctx.fillStyle='rgba(228,144,64,.92)';ctx.fillText('讓品牌的靈魂破殼而出',CX,CY+8);ctx.globalAlpha=clamp(sA*.44,0,.5);ctx.strokeStyle='rgba(196,96,20,.36)';ctx.lineWidth=.5;const lw=sA*72;ctx.beginPath();ctx.moveTo(CX-lw-20,CY+26);ctx.lineTo(CX-20,CY+26);ctx.stroke();ctx.beginPath();ctx.moveTo(CX+20,CY+26);ctx.lineTo(CX+lw+20,CY+26);ctx.stroke();ctx.restore();}
+
+  function frame(now){if(outroDone)return;if(!lastT)lastT=now;const dt=Math.min((now-lastT)/1000,.05);lastT=now;elapsed+=dt;
+  ctx.clearRect(0,0,W,H);const introBg=ctx.createRadialGradient(CX,CY,0,CX,CY,Math.max(W,H)*.72);introBg.addColorStop(0,'#11172f');introBg.addColorStop(.42,'#1d2947');introBg.addColorStop(.68,'#506b88');introBg.addColorStop(1,'#9aabba');ctx.fillStyle=introBg;ctx.fillRect(0,0,W,H);
+  const vig=ctx.createRadialGradient(CX,CY,0,CX,CY,Math.max(W,H)*.72);vig.addColorStop(0,'rgba(0,0,0,0)');vig.addColorStop(1,'rgba(0,0,0,.44)');ctx.fillStyle=vig;ctx.fillRect(0,0,W,H);
+  drawAmb();
+  if(elapsed>=TL.BOOM&&elapsed<TL.BOOM+.2){const fp=(elapsed-TL.BOOM)/.2;ctx.fillStyle=`rgba(226,158,68,${(1-fp)*.38})`;ctx.fillRect(0,0,W,H);}
+  if(elapsed>=TL.EGG_IN&&elapsed<TL.BOOM){const inp=clamp((elapsed-TL.EGG_IN)/(TL.EGG_FULL-TL.EGG_IN),0,1);const alpha=easeOut(inp),sc=.42+easeOut(inp)*.58;const breath=elapsed>=TL.EGG_FULL?1+Math.sin(elapsed*1.9)*.026:1;const warmth=clamp((elapsed-TL.EGG_FULL)/2,0,1);const crackP=clamp((elapsed-TL.CRACK_S)/(TL.CRACK_E-TL.CRACK_S),0,1);let sx=0,sy=0;if(crackP>.62){const si=(crackP-.62)/.38;sx=(Math.random()-.5)*si*5;sy=(Math.random()-.5)*si*3;}const rx=76*sc*breath,ry=98*sc*breath;drawEgg(CX+sx,CY+sy,rx,ry,alpha,warmth*.5,warmth);if(crackP>0)drawCracks(CX+sx,CY+sy,rx,ry,crackP);}
+  if(elapsed>=TL.BOOM){if(!boomDone){createBoom(CX,CY,76,98);boomDone=true;}drawBoom();}
+  if(elapsed>=TL.WING_S&&elapsed<TL.BRAND_E){const wp=clamp((elapsed-TL.WING_S)/1.5,0,1);const wo=elapsed>TL.BRAND_S?clamp(1-(elapsed-TL.BRAND_S)/1.5,0,1):1;drawWings(CX,CY,easeOut(wp)*wo,.5+easeOut(wp)*.5,Math.sin(elapsed*1.22)*7);}
+  if(elapsed>=TL.BRAND_S){const sp2=clamp((elapsed-TL.BRAND_S-.8)/1.2,0,1);drawBrand(easeOut(sp2));}
+  if(elapsed>=TL.OUT_S){const op=clamp((elapsed-TL.OUT_S)/(TL.OUT_E-TL.OUT_S),0,1);ctx.fillStyle=`rgba(36,36,60,${easeIn(op)})`;ctx.fillRect(0,0,W,H);if(op>=1){handoff();return;}}
+  requestAnimationFrame(frame);}
+
+  function handoff(){if(outroDone)return;outroDone=true;document.getElementById('intro').classList.add('out');setTimeout(()=>{document.getElementById('intro').style.display='none';document.getElementById('main').classList.add('visible');document.getElementById('site-nav').classList.add('visible');document.body.style.overflow='auto';initMain();},1600);}
+  document.getElementById('skip-btn').addEventListener('click',handoff);
+  document.body.style.overflow='hidden';
+  requestAnimationFrame(frame);
+})();
+
+/* ═══════════ MAIN PAGE ═══════════ */
+function initMain(){
+  /* scroll reveal */
+  const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.1});
+  document.querySelectorAll('.scroll-on,.sec-head,.cases-head,.cases-note,.magic-card').forEach(el=>obs.observe(el));
+
+  /* Orange cursor only on selected interactive elements. */
+  document.querySelectorAll('.nav-brand,.nav-links a,.kw-tag,.service-card,#yolk-sphere,.cta-btn').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{if(!document.body.classList.contains('wand-mode'))document.body.classList.add('cursor-accent');});
+    el.addEventListener('mouseleave',()=>document.body.classList.remove('cursor-accent'));
+  });
+
+  /* yolk sphere orbit particles */
+  const sphere=document.getElementById('yolk-sphere');
+  if(sphere){
+    const defs=[{r:148,dur:8.5,start:0,sz:2.8,warm:true,op:.6},{r:155,dur:13,start:120,sz:2.0,warm:false,op:.36},{r:162,dur:11,start:240,sz:2.4,warm:true,op:.54},{r:145,dur:18,start:60,sz:1.5,warm:false,op:.28},{r:158,dur:9.8,start:180,sz:2.0,warm:true,op:.46},{r:152,dur:15,start:300,sz:1.5,warm:false,op:.32}];
+    const kf=defs.map((d,i)=>`@keyframes orb${i}{from{transform:rotate(${d.start}deg) translateX(${d.r}px)}to{transform:rotate(${d.start+360}deg) translateX(${d.r}px)}}`).join('');
+    const st=document.createElement('style');st.textContent=kf;document.head.appendChild(st);
+    defs.forEach((d,i)=>{const p=document.createElement('div');const delay=-(d.dur*i/defs.length).toFixed(2);p.style.cssText=`position:absolute;top:50%;left:50%;width:${d.sz}px;height:${d.sz}px;margin:${-d.sz/2}px 0 0 ${-d.sz/2}px;border-radius:50%;background:${d.warm?'#f0a060':'#8ab0e0'};opacity:${d.op};box-shadow:0 0 ${d.sz*2.5}px ${d.warm?'rgba(238,130,50,.52)':'rgba(124,168,228,.42)'};animation:orb${i} ${d.dur}s linear ${delay}s infinite;`;sphere.appendChild(p);});
+  }
+
+  initMagicCards();
+  initConstellation();
+
+  document.getElementById('cta-btn')?.addEventListener('click',()=>{window.location.href='mailto:hello@westudio.com?subject=讓我們見個面';});
+}
+
+/* ═══════════ MAGIC CARDS ═══════════ */
+function initMagicCards(){
+  const section=document.getElementById('cases');
+  if(!section)return;
+
+  /* sparkle canvas */
+  const cv=document.getElementById('sparkle-cv');
+  if(!cv)return;
+  const ctx=cv.getContext('2d');
+  let cW,cH;
+  function resizeCv(){cW=cv.width=section.offsetWidth;cH=cv.height=section.offsetHeight;}
+  resizeCv();
+  window.addEventListener('resize',resizeCv);
+
+  const sparks=[];
+
+  function addSparks(x,y,n=4){
+    for(let i=0;i<n;i++){
+      const a=Math.random()*Math.PI*2,sp=Math.random()*2.2+.5;
+      const rnd=Math.random();
+      sparks.push({x,y,vx:Math.cos(a)*sp*.55,vy:Math.sin(a)*sp-1.5,life:1,decay:Math.random()*.026+.016,size:Math.random()*2.2+.8,star:Math.random()>.45,col:rnd>.7?'w':rnd>.35?'g':'b'});
+    }
+  }
+
+  function drawStar4(x,y,r){
+    ctx.beginPath();
+    for(let i=0;i<8;i++){
+      const a=(i/8)*Math.PI*2-Math.PI/2,radius=i%2===0?r:r*.36;
+      i===0?ctx.moveTo(x+Math.cos(a)*radius,y+Math.sin(a)*radius):ctx.lineTo(x+Math.cos(a)*radius,y+Math.sin(a)*radius);
+    }
+    ctx.closePath();
+  }
+
+  (function renderLoop(){
+    ctx.clearRect(0,0,cW,cH);
+    for(let i=sparks.length-1;i>=0;i--){
+      const p=sparks[i];
+      p.x+=p.vx;p.y+=p.vy;p.vy+=.05;p.life-=p.decay;
+      if(p.life<=0){sparks.splice(i,1);continue;}
+      const col=p.col==='w'?`rgba(255,244,220,${p.life})`:p.col==='g'?`rgba(235,148,58,${p.life})`:`rgba(118,170,232,${p.life})`;
+      ctx.save();ctx.globalAlpha=p.life*.82;ctx.fillStyle=col;ctx.shadowBlur=7;ctx.shadowColor=col;
+      if(p.star){drawStar4(p.x,p.y,p.size*1.3);ctx.fill();}else{ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();}
+      ctx.restore();
+    }
+    requestAnimationFrame(renderLoop);
+  })();
+
+  /* Wand appears only when the pointer is very close to a card. */
+  const magicCards=[...document.querySelectorAll('.magic-card')].map(card=>({
+    card,shine:card.querySelector('.card-shine')
+  }));
+  const WAND_DISTANCE=60;
+  magicCards.forEach(s=>{
+    s.card.addEventListener('mouseenter',()=>s.card.classList.add('magic-active'));
+    s.card.addEventListener('mouseleave',()=>s.card.classList.remove('magic-active'));
+  });
+
+  function distanceToCard(x,y,rect){
+    const dx=Math.max(rect.left-x,0,x-rect.right);
+    const dy=Math.max(rect.top-y,0,y-rect.bottom);
+    return Math.hypot(dx,dy);
+  }
+
+  section.addEventListener('mousemove',e=>{
+    let nearest=Infinity;
+    magicCards.forEach(s=>{
+      const r=s.card.getBoundingClientRect();
+      nearest=Math.min(nearest,distanceToCard(e.clientX,e.clientY,r));
+      if(s.shine){
+        const px=clamp((e.clientX-r.left)/r.width*100,0,100);
+        const py=clamp((e.clientY-r.top)/r.height*100,0,100);
+        s.shine.style.background=distanceToCard(e.clientX,e.clientY,r)<=WAND_DISTANCE?`radial-gradient(circle at ${px}% ${py}%,rgba(255,205,90,.16) 0%,transparent 65%)`:'radial-gradient(circle at 50% 50%,rgba(255,210,100,.08),transparent 62%)';
+      }
+    });
+    const wandActive=nearest<=WAND_DISTANCE;
+    document.body.classList.toggle('wand-mode',wandActive);
+    if(wandActive){
+      document.body.classList.remove('cursor-accent');
+      const r=section.getBoundingClientRect();
+      addSparks(e.clientX-r.left,e.clientY-r.top,3);
+    }else if(wandEl)wandEl.style.display='none';
+  });
+  section.addEventListener('mouseleave',()=>{
+    document.body.classList.remove('wand-mode','cursor-accent');
+    magicCards.forEach(s=>{
+      if(s.shine)s.shine.style.background='radial-gradient(circle at 50% 50%,rgba(255,210,100,.08),transparent 62%)';
+    });
+    if(wandEl)wandEl.style.display='none';
+  });
+}
+
+/* ═══════════ CONSTELLATION ═══════════ */
+function initConstellation(){
+  const cv=document.getElementById('const-cv');
+  if(!cv)return;
+  const ctx=cv.getContext('2d');
+  let W,H,mX=-999,mY=-999,t=0,lt=0;
+
+  const LABELS=[
+    '食物調理機','小家電','餐桌品牌','室內設計',
+    '租屋改造','收納','手機殼','耳機',
+    '女性運動課程','精油 · SPA','寵物用品','個人旅遊規劃',
+    '女心理師','女作家','女醫師','女講師',
+    'YouTuber','Podcaster','靈性工作者','插畫家',
+    '高級補品','連鎖髮廊','高級護膚品','音樂祭','手遊',
+    '美妝保養品牌','食品伴手禮','茶葉禮品','3C週邊',
+    '瑜珈運動服飾','頂級SPA芳療','兒童藝文品牌','女性創業顧問',
+  ];
+
+  let nodes=[];
+  function resize(){W=cv.width=cv.offsetWidth;H=cv.height=cv.offsetHeight;placeNodes();}
+  function placeNodes(){const cx=W/2,cy=H/2,n=LABELS.length;nodes=LABELS.map((lb,i)=>{const a=(i/n)*Math.PI*2+(i%5)*.24,r=.2+(i%4)*.058;return{lb,x:cx+Math.cos(a)*W*r+(Math.random()-.5)*90,y:cy+Math.sin(a)*H*r+(Math.random()-.5)*55,r:Math.random()*1.25+1.15,ph:Math.random()*Math.PI*2,ps:Math.random()*1+.72,ba:Math.random()*.28+.42,active:false};});}
+
+  const CR=128,MR=155;
+  function frame2(now){
+    if(!lt)lt=now;const dt=Math.min((now-lt)/1000,.05);lt=now;t+=dt;
+    ctx.clearRect(0,0,W,H);
+    nodes.forEach(n=>{n.ph+=n.ps*dt;n.active=Math.hypot(n.x-mX,n.y-mY)<MR;});
+    for(let i=0;i<nodes.length;i++){for(let j=i+1;j<nodes.length;j++){const a=nodes[i],b=nodes[j],d=Math.hypot(a.x-b.x,a.y-b.y);if(d>CR)continue;const ei=a.active||b.active,bo=a.active&&b.active;if(!ei&&Math.random()>.003)continue;const str=1-d/CR,la=bo?.28*str:ei?.14*str:.035*str;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=bo?`rgba(196,96,20,${la})`:`rgba(84,126,186,${la})`;ctx.lineWidth=bo?.76:.36;ctx.stroke();}}
+    nodes.forEach(n=>{const pl=.48+.52*(.5+.5*Math.sin(n.ph)),sz=n.r*(n.active?2.8:1)*pl,a2=n.ba*(n.active?1.8:1)*pl;const glow=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,Math.max(5,sz*5));glow.addColorStop(0,n.active?'rgba(228,146,66,.34)':`rgba(190,222,246,${.22*pl})`);glow.addColorStop(1,'rgba(140,190,230,0)');ctx.beginPath();ctx.arc(n.x,n.y,Math.max(5,sz*5),0,Math.PI*2);ctx.fillStyle=glow;ctx.fill();if(n.active){const gd=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,sz*4);gd.addColorStop(0,'rgba(196,96,20,.14)');gd.addColorStop(1,'rgba(196,96,20,0)');ctx.beginPath();ctx.arc(n.x,n.y,sz*4,0,Math.PI*2);ctx.fillStyle=gd;ctx.fill();}ctx.beginPath();ctx.arc(n.x,n.y,sz,0,Math.PI*2);ctx.fillStyle=n.active?`rgba(228,146,66,${Math.min(a2,1)})`:`rgba(190,222,246,${Math.min(a2,1)})`;ctx.fill();if(!n.active&&pl>.84){const ray=3+sz*1.8;ctx.beginPath();ctx.moveTo(n.x-ray,n.y);ctx.lineTo(n.x+ray,n.y);ctx.moveTo(n.x,n.y-ray);ctx.lineTo(n.x,n.y+ray);ctx.strokeStyle=`rgba(210,235,252,${(pl-.84)*2.8})`;ctx.lineWidth=.55;ctx.stroke();}if(n.active){ctx.font='100 10.5px Noto Sans TC,Helvetica Neue,sans-serif';ctx.fillStyle='rgba(212,202,186,.88)';ctx.textAlign='center';ctx.fillText(n.lb,n.x,n.y-sz*3-4);}});
+    requestAnimationFrame(frame2);
+  }
+
+  resize();window.addEventListener('resize',resize);
+  cv.addEventListener('mousemove',e=>{const r=cv.getBoundingClientRect();mX=e.clientX-r.left;mY=e.clientY-r.top;});
+  cv.addEventListener('mouseleave',()=>{mX=-999;mY=-999;});
+  requestAnimationFrame(frame2);
+}
+</script>
+</body>
+</html>
